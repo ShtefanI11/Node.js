@@ -1,43 +1,112 @@
 /////////////////////////////////////////////////////Practice////////////////////////////////////////////////////////////
-#Принимать и отвечать данными в формате JSON ¶
+#Принимать и отвечать данными в формате JSON ¶ | path2
 
-#Взаимодействуя с API, вы всегда отправляете определенные данные 
-#с запросом или получаете их в ответ. Существует множество 
-#различных форматов данных, но JSON (Javascript Object Notation)
-#является стандартизованным форматом.
+"localhost:3000/api/v1/workouts должны видет нашу бд JSON"
+#Теперь точка для создания или обновления тренировки нуждается в данных от клиента.
+#Внутри нашего контроллера тренировок мы извлекаем тело запроса на создание новой тренировки и передаем его в сервис
+#тренировок. Внутри сервиса workout мы вставим его в наш DB.json и отправим созданную тренировку обратно клиенту.
 
-#В силу своей стандартизации API должны принимать данные в 
-#формате JSON и отвечать на них.
+"Чтобы иметь возможность разобрать присланный JSON внутри тела запроса, 
+нам необходимо сначала установить body-parser и настроить его. npm i body-parser"
 
-//№1 src/services/workoutService.js
-"Также рекомендуется называть методы сервиса так же, как и 
-методы контроллера"
-1. Создать функции с названием из каждого метода Controllers
-2. Импортировать бд ,в функции создать переменную допустим:
-allWorkouts присвоить обращение к бд достать все тренировки.
-3. Вернуть переменную со всеми тренировками.
+"Uuid — отличный пакет, который позволит вам легко генерировать надежные значения идентификаторов.
+ Вы можете использовать эти уникальные npm i uuid"
 
+//№1 index.js
+"Подключаем body-parser и настраиваем, предводительно установив его."
+1. import bodyParser from 'body-parser';
+2. Вызвать express и использовать use (обратиться к переменной bodyParser вызвать json()) 
+"Теперь мы можем получать JSON-данные внутри наших контроллеров в req.body."
+[Для того чтобы проверить это,открыть Postman, создайте POST-запрос на localhost:3000/api/v1/workouts и тело запроса
+в формате JSON, как показано ниже:
+{
+  "name": "Core Buster",
+  "mode": "AMRAP 20",
+  "equipment": [
+    "rack",
+    "barbell",
+    "abmat"
+  ],
+  "exercises": [
+    "15 toes to bars",
+    "10 thrusters",
+    "30 abmat sit-ups"
+  ],
+  "trainerTips": [
+    "Split your toes to bars into two sets maximum",
+    "Go unbroken on the thrusters",
+    "Take the abmat sit-ups as a chance to normalize your breath"
+  ]
+}
+]
 //№2 src/controllers/workoutController.js
-"Внутри нашего контроллера workout мы можем использовать 
-эти методы."
-1. Импортируем все методы из workoutService
-2. Создаём внутри методов переменные и ссылаемся на них:[allWorkouts,
-workout, createWorkout, updateWorkout,]
-2.1 для удаления переменную не создавать,вызвать сразу метод.
-3. В ответ пользователю вернуть ответ в объекте status 200 = ok,
-data: данные которые мы сохраняем в переменной, пришли они из 
-Service
+"Внутри метода `createNewWorkoutController` нашего контроллера тренировок мы можем извлечь тело из объекта запроса,
+выполнить некоторую проверку и передать его в качестве аргумента нашему сервису тренировок."
 
-//№3 src/database
-"База данных уже создана в формате json
-Тренировки состоять из таких данных: id, name, mode, equipment,
-exercises, createdAt, updatedAt и trainerTips."
-1. В файле Workout.js Импортируем базу данных 
-2. Создать функцию ,допустим getAllWorkouts в ней вернуть с базы
-данных все тренировки"в бд зайди посмотреть поля и вернуть всё"
-3. 
+1. Внутри createNewWorkoutController вытошить с запроса, const {body} = req 
+1.2 Напсать условие if в body нету полей "name, mode, equipment, exercises, trainerTips" Например:
+!body.name || !body.mode и тд, вернуть {return}
+2. Написать объект добавление тренировки например: newWorkout {присвоить какждое поле полям которые отправим в body.имяПоля}
+3. Создать функцию createdWorkoutReq: Импортируем Service метод создания новой тренировки,в колбек передать объект
+newWorkout.
+3.1 В ответ res.status(201).send({
+  status: 'ok',
+  data: createdWorkoutReq
+})
+
+#После этого добавим к объекту недостающие свойства и передадим его новому методу в нашем слое доступа к данным, 
+#чтобы сохранить его в нашей БД.
+"Сначала мы создадим простую функцию Util Function для перезаписи нашего JSON-файла, чтобы сохранить данные."
+
+//№4 src/database/utils.js
+"Модуль node:fs позволяет взаимодействовать с файловой системой по образцу стандартных функций POSIX."
+1. import * as fs from 'node:fs';
+2. Создать переменную saveToDataBase = (DB) => {
+  fs.writeFileSync('./src/database/db.json', /прокладуем путь модулю fs к директории бд;
+  JSON.stringify(DB,null,2),
+  {
+    encoding: 'utf-8'
+  }
+);
+}
+3. export {функцию}.
+
+//№5 src/database/Workout.js
+"Теперь мы можем использовать функцию сохранение данных в базу данных"
+1. Импортировать функцию saveToDataBase из utils;
+2. Создаём функцию для создания новой тренировки createNewWorkout в колбек получаем props: newWorkout
+3. Внутри созд переменную isAlreadyAdded = DB.workouts.findIndex(
+  indx если у indx.name сравнение типов ,равен newWorkout.name
+) > -1
+4. Условие if(isAlreadyAdded) {return} | Если поле будет повторятся мы его вернём, То есть не создадим.
+5. DB.workouts.push(newWorkout) | когда условие true push в бд данные которые пришли в пропсах
+5. saveToDataBase(DB) вызываем метод в utils который создаст новые данные в бд
+6. return newWorkout
+7. export новую функцию обработки данных ,которые будут перезаписываться в бд createdNewWorkout
+#Вкратце созданная функция проверяет наличия name в объекте который мы будем создавать для бд чтобы он был 0 и выше 1,2
+#только не меньше -1 
+
+//№6 src/services/workoutService.js
+#Перейдем в наш сервис тренировок и получим данные в методе createNewWorkoutService.
+1. import { v4 as uuid } from 'uuid';
+2. createNewWorkoutService: в колбек передать props newWorkout => {
+ create obj. Например: workoutToInsert = {
+  развернуть props, спрет оператором
+  id: uuid(), /этот метод генерирует уникальный id
+  createdAt: new Date().toLocaleString('en-US', {
+    timeZone: 'UTC',
+}),
+  updatedAt: new Date().toLocaleString('en-US', {
+    timeZone: 'UTC',
+}),
+}
+};
+3. createdWorkout = createNewWorkoutDB которая в database/Workout.js (workoutToInsert)передать данные id и время в бд.
+4. return createdWorkout;
+
 
 ///////////////////////////////////////////ProjectArchitecture/////////////////////////////////////////////////////////
+
 #Архитектура проекта.
 "Router => Controller => Service Layer => Data Access Layer"
 #Запрос & Ответ

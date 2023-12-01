@@ -1,17 +1,17 @@
 import express from 'express';
 import {
-  createNewWorkout,
-  deleteOneWorkout,
-  getAllWorkouts,
-  getOneWorkout,
-  updateOneWorkout,
+  getAllWorkoutsController,
+  getOneWorkoutController,
+  createNewWorkoutController,
+  updateOneWorkoutController,
+  deleteOneWorkoutController,
 } from '../../controllers/workoutController.js';
 
 const router = express.Router();
 
-router.get('/', getAllWorkouts);
-router.get('/:workoutId', getOneWorkout);
-router.post('/', createNewWorkout);
-router.patch('/:workoutId', updateOneWorkout);
-router.delete('/:workoutId', deleteOneWorkout);
+router.get('/', getAllWorkoutsController);
+router.get('/:workoutId', getOneWorkoutController);
+router.post('/', createNewWorkoutController);
+router.patch('/:workoutId', updateOneWorkoutController);
+router.delete('/:workoutId', deleteOneWorkoutController);
 export default router;

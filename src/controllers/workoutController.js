@@ -1,22 +1,35 @@
-const getAllWorkouts = (req, res) => {
-  res.send('Get all workouts');
+import {
+  createNewWorkoutService,
+  deleteOneWorkoutService,
+  getAllWorkoutsService,
+  getOneWorkoutService,
+  updateOneWorkoutService,
+} from '../services/workoutService.js';
+
+const getAllWorkoutsController = (req, res) => {
+  const allWorkouts = getAllWorkoutsService();
+  res.send({ status: 'OK', data: allWorkouts });
 };
-const getOneWorkout = (req, res) => {
+const getOneWorkoutController = (req, res) => {
+  const workout = getOneWorkoutService();
   res.send('Get an existing workout');
 };
-const createNewWorkout = (req, res) => {
+const createNewWorkoutController = (req, res) => {
+  const createdWorkout = createNewWorkoutService();
   res.send('Create a new workout');
 };
-const updateOneWorkout = (req, res) => {
+const updateOneWorkoutController = (req, res) => {
+  const updatedWorkout = updateOneWorkoutService();
   res.send('Update an existing workout');
 };
-const deleteOneWorkout = (req, res) => {
+const deleteOneWorkoutController = (req, res) => {
+  deleteOneWorkoutService();
   res.send('Delete an existing workout');
 };
 export {
-  getAllWorkouts,
-  getOneWorkout,
-  createNewWorkout,
-  updateOneWorkout,
-  deleteOneWorkout,
+  getAllWorkoutsController,
+  getOneWorkoutController,
+  createNewWorkoutController,
+  updateOneWorkoutController,
+  deleteOneWorkoutController,
 };
