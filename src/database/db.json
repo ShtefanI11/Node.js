@@ -4,7 +4,10 @@
       "id": "61dbae02-c147-4e28-863c-db7bd402b2d6",
       "name": "Tommy V",
       "mode": "For Time",
-      "equipment": ["barbell", "rope"],
+      "equipment": [
+        "barbell",
+        "rope"
+      ],
       "exercises": [
         "21 thrusters",
         "12 rope climbs, 15 ft",
@@ -20,6 +23,28 @@
         "Try to do the 9 and 6 thrusters unbroken",
         "RX Weights: 115lb/75lb"
       ]
+    },
+    {
+      "name": "Core Buster",
+      "mode": "AMRAP 20",
+      "equipment": [
+        "rack",
+        "barbell",
+        "abmat"
+      ],
+      "exercises": [
+        "15 toes to bars",
+        "10 thrusters",
+        "30 abmat sit-ups"
+      ],
+      "trainerTips": [
+        "Split your toes to bars into two sets maximum",
+        "Go unbroken on the thrusters",
+        "Take the abmat sit-ups as a chance to normalize your breath"
+      ],
+      "id": "dacbe456-e53e-4b5b-8e75-e488f7011e3c",
+      "createdAt": "12/1/2023, 9:48:17 AM",
+      "updatedAt": "12/1/2023, 9:48:17 AM"
     }
   ]
 }
